@@ -52,3 +52,7 @@
   font-size: 3rem;
   border-radius: 15px;
 }
+
+.box {
+  @apply grid grid-rows-3 justify-center bg-slate-800 shadow-lg rounded-lg w-max p-5;
+}
