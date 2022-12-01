@@ -54,5 +54,5 @@
 }
 
 .box {
-  @apply grid grid-rows-3 justify-center bg-slate-800 shadow-lg rounded-lg w-max p-5;
+  @apply flex flex-col gap-2 justify-center bg-slate-800 shadow-lg rounded-lg;
 }

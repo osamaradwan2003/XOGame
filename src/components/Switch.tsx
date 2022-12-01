@@ -1,11 +1,13 @@
-import {useState} from "react";
+import {useState, useEffect} from "react";
 type SwichProps = {
   values: any[],
   OnSwitch?: CallableFunction,
+  onRender?: CallableFunction,
   defaultValue?: any,
+  className: string
 }
 
-const Switch: React.FC<SwichProps> = ({values, OnSwitch, defaultValue})=>{
+const Switch: React.FC<SwichProps> = ({values, OnSwitch, defaultValue, className, onRender})=>{
 
   let [slectedValue, setSelectValue] = useState(defaultValue ?? values[0]);
   
@@ -21,9 +23,13 @@ const Switch: React.FC<SwichProps> = ({values, OnSwitch, defaultValue})=>{
     }
   }
 
+  useEffect(()=>{
+      if(onRender)
+        onRender(defaultValue, values.indexOf(defaultValue), values);
+  }, []);
 
   return (
-    <div className="flex w-full bg-slate-900 p-1 text-slate-300 rounded my-2">
+    <div className={`flex bg-slate-900 p-1 text-slate-300 rounded my-2 ${className || ""}`}>
       {
         values.map((elem: any, index:number)=>{
             return (
