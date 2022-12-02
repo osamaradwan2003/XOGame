@@ -31,9 +31,37 @@ export default class PlayBox extends Component<PlayBoxProbs, PlayBoxState> {
     });
   }
 
-  componentDidUpdate(): void {
-    console.log(this.playService.checkWins(this.state.gameState));
+  componentDidUpdate(prevState: PlayBoxProbs, prevProbs: PlayBoxState): void {
+    if(this.checkWinner()){
+      console.log(this.state.gameState);
+      return;
+    }
+    console.log(this.state, prevState)
+      setTimeout(this.computerPlayer.bind(this), 1000);
+    
   }
+
+  checkWinner(): boolean{
+    const player: Player = this.playService.checkWins(this.state.gameState)
+    if(player.name == "null"){
+      return false;
+    }
+
+    return true;
+  }
+
+  computerPlayer(){
+    if(!this.state.currPlayer.isCPU) return;
+    
+    this.setState(()=>{
+      const newState = this.playService.cpuPlayer(this.state.gameState, this.state.currPlayer);
+      return{
+        gameState: newState,
+        currPlayer: this.props.players.filter(p=> p.name !== this.state.currPlayer.name)[0],
+      }
+    });
+  }
+
 
 
   render(): JSX.Element {

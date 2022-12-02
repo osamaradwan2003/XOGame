@@ -48,6 +48,29 @@ class XOPlayerService {
 
     return { name: "null", isCPU: false, isPlayer: false, isFrist: false };
   }
+
+  getRandomCell(state: string[][]): number[] {
+    const emptyCells: number[][] = [];
+    // get empty cells
+    state.map((row, rowIndex: number) => {
+      row.map((cell, cellIndex: number) => {
+        if (cell == "") {
+          emptyCells.push([rowIndex, cellIndex]);
+        }
+      });
+    });
+
+    const randomIndex = Math.floor(Math.random() * emptyCells.length);
+
+    return emptyCells[randomIndex];
+  }
+
+  cpuPlayer(state: string[][], player: Player): string[][] {
+    const [rowIndex, index] = this.getRandomCell(state);
+
+    state[rowIndex][index] = player.name;
+    return state;
+  }
 }
 
 export default XOPlayerService;
