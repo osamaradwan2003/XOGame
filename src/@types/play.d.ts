@@ -1,8 +1,8 @@
 type Player = {
   name: string;
-  isCPU: boolean = false;
-  isPlayer: boolean = false;
-  isFrist: boolean = false;
+  isCPU: boolean;
+  isPlayer: boolean;
+  isFrist: boolean;
 };
 
 type PlayBoxProbs = {
@@ -15,5 +15,6 @@ type PlayBoxState = {
   XWonsNumbers: number;
   OWonsNumbers: number;
   tiesNumber: number;
-  isCPU?: boolean;
+  winMessage: string;
+  showWinMessage: boolean;
 };

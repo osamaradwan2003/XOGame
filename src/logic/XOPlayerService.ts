@@ -1,6 +1,6 @@
 class XOPlayerService {
   private players: Player[];
-  constructor(state: string[][], players: Player[]) {
+  constructor(players: Player[]) {
     this.players = players;
   }
 

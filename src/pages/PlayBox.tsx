@@ -1,9 +1,11 @@
 import { Component } from "react";
 import { Btn, MainBtn, StateInfo } from "../components";
 import {MdReplayCircleFilled} from "react-icons/md"
+import XOPlayerService from "../logic/XOPlayerService";
 
 
 export default class PlayBox extends Component<PlayBoxProbs, PlayBoxState> {
+  private playService: XOPlayerService;
   constructor(props:PlayBoxProbs ) {
     super(props)
       this.state = {
@@ -11,15 +13,26 @@ export default class PlayBox extends Component<PlayBoxProbs, PlayBoxState> {
         gameState: [["", "", ""], ["", "", ""], ["", "", ""]],
         XWonsNumbers: 0,
         OWonsNumbers: 0,
-        tiesNumber: 0
+        tiesNumber: 0,
+        winMessage: "",
+        showWinMessage: false,
     }
+    this.playService = new XOPlayerService(props.players);
   }
 
   handelBoxBtns(rowindex: number, index: number): void{
+    if(this.state.currPlayer.isCPU || this.state.gameState[rowindex][index] != "") return;
+    this.setState(prev=>{
+      prev.gameState[rowindex][index] = this.state.currPlayer.name;
+      return{
+        gameState: prev.gameState,
+        currPlayer: this.props.players.filter(p=> p.name !== this.state.currPlayer.name)[0],
+      }
+    });
   }
 
   componentDidUpdate(): void {
-    
+    console.log(this.playService.checkWins(this.state.gameState));
   }
 
 
@@ -43,7 +56,7 @@ export default class PlayBox extends Component<PlayBoxProbs, PlayBoxState> {
                 <MainBtn 
                 onClick={this.handelBoxBtns.bind(this, rowIndex, index)}  
                 key={ Date.now() *  ((rowIndex +1 ) * (index +1))} 
-                className='w-full h-full'>
+                className={`${this.state.gameState[rowIndex][index] == "x" ? 'x-color' : 'o-color'}`}>
                   {this.state.gameState[rowIndex][index]}
                 </MainBtn>
               )
