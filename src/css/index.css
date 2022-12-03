@@ -14,7 +14,7 @@
 
 * {
   user-select: none;
-  text-transform: uppercase;
+  text-transform: uppercase !important;
 }
 
 #root {
@@ -41,12 +41,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 1px 7px 8px var(--dark-skay);
   cursor: pointer;
   @apply font-bold;
 }
 
 .main-btn {
+  box-shadow: 1px 7px 8px var(--dark-skay);
   width: 80px;
   height: 80px;
   font-size: 3rem;

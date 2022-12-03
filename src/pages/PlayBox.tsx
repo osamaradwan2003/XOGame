@@ -47,7 +47,7 @@ export default class PlayBox extends Component<PlayBoxProbs, PlayBoxState> {
       return false;
     }
     this.resetBox();
-    this.incressWinsNumbers(player);
+    this.increaseWinsNumbers(player);
     this.showWinMessage(player);
     return true;
   }
@@ -55,11 +55,11 @@ export default class PlayBox extends Component<PlayBoxProbs, PlayBoxState> {
   showWinMessage(player: Player){
     this.setState({
       showWinMessage: true,
-      WonMessage: `${player.name.toUpperCase() != 'draw' ? 'Won' : 'DRAW'}`
+      WonMessage: `${player.name != 'draw' ? player.name + '\'s is Won' : 'DRAW'}`
     });
   }
 
-  incressWinsNumbers(player: Player){
+  increaseWinsNumbers(player: Player){
     if(player.name == 'null') return;
     let wonNumsKeys:StateWonsNumbers = {
       x:  "XWonsNumbers",
@@ -93,18 +93,35 @@ export default class PlayBox extends Component<PlayBoxProbs, PlayBoxState> {
   }
 
 
+  playAgain(){
+    this.setState({
+      showWinMessage: false,
+      WonMessage: '',
+    });
+  }
+
+  reStart(){
+    this.props.onRestart();
+  }
+
 
   render(): JSX.Element {
     return (
       <>
         {
-          (
-            this.state.showWinMessage ??
-            <div className="overlay absolute">
-              <h2 className="">{this.state.WonMessage}</h2>
+          this.state.showWinMessage &&
+          <div className="flex flex-col gap-5 items-center justify-center overlay absolute h-screen w-screen top-0 left-0 bg-black bg-opacity-60 uppercase">
+            <h2 className="text-2xl text-slate-200">{this.state.WonMessage}</h2>
+            <div className="btns w-full flex flex-col justify-center gap-2 items-center">
+              <Btn onClick={this.playAgain.bind(this)} className="text-xl p-3 rounded w-1/2 o-bg text-slate-900 hover:shadow-2xl hover:shadow-sky-900">
+                  Play Again
+              </Btn>
+              <Btn onClick={this.reStart.bind(this)} className="text-xl p-3 rounded w-1/2 x-bg text-slate-900
+                hover:shadow-2xl hover:shadow-sky-900">
+                  Restart
+              </Btn>
             </div>
-          )
-          
+          </div>
         }
         <div className="container grid gap-3 content-center h-screen justify-center">
         <header className="flex gap-3 justify-between mb-3 items-center w-full">
@@ -113,19 +130,19 @@ export default class PlayBox extends Component<PlayBoxProbs, PlayBoxState> {
           </h4>
           <div  className="flex items-center justify-center p-3 rounded-lg text-sm  text-slate-400 font-bold bg-slate-900 select-none">
             <span className='text-lg pr-2'> {this.state.currPlayer.name} </span> TURN </div>
-          <Btn className="text-xl p-3 rounded bg-slate-400 text-slate-900">
+          <Btn onClick={this.reStart.bind(this)} className="text-xl p-3 rounded bg-slate-400 text-slate-900">
             <MdReplayCircleFilled />
           </Btn>
         </header>
         <main className="grid grid-cols-3 grid-rows-3 gap-3 w-full justify-items-center">
           {this.state.gameState.map((rows, rowIndex)=>{
-            return rows.map((_, index)=>{
+            return rows.map((value, index)=>{
               return (
                 <MainBtn 
                 onClick={this.handelBoxBtns.bind(this, rowIndex, index)}  
                 key={ Date.now() *  ((rowIndex +1 ) * (index +1))} 
                 className={`${this.state.gameState[rowIndex][index] == "x" ? 'x-color' : 'o-color'}`}>
-                  {this.state.gameState[rowIndex][index]}
+                  {value}
                 </MainBtn>
               )
             })

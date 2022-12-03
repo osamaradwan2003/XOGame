@@ -3,12 +3,13 @@ interface Player {
   name: PlayerNames;
   isCPU: boolean;
   isPlayer: boolean;
-  isFrist: boolean;
+  isFirst: boolean;
 }
 
 type PlayBoxProbs = {
   currPlayer: Player;
   players: Player[];
+  onRestart: CallableFunction;
 };
 type PlayBoxState = {
   currPlayer: Player;

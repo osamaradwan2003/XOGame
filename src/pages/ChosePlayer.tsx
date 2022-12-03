@@ -10,13 +10,13 @@ type ChosePlayerProbs = {
 
 const ChosePlayer: React.FC<ChosePlayerProbs> = ({onChose})=>{
   let players: Player[];
-  const setValue = (player:any, index:number, players_arr: [])=>{
+  const setValue = (player:string, index:number, players_arr: [])=>{
     players = players_arr.map(player_name => {
       return {
         name: player_name,
         isCPU: false,
         isPlayer: player == player_name,
-        isFrist: player == player_name
+        isFirst: player == player_name
       }
     });
   }
@@ -29,7 +29,7 @@ const ChosePlayer: React.FC<ChosePlayerProbs> = ({onChose})=>{
         name: player.name,
         isCPU: !player.isPlayer,
         isPlayer: player.isPlayer,
-        isFrist: player.isFrist
+        isFirst: player.isFirst
       }
     });
     onChose(players)
@@ -41,7 +41,7 @@ const ChosePlayer: React.FC<ChosePlayerProbs> = ({onChose})=>{
         name: player.name,
         isCPU: false,
         isPlayer: true,
-        isFrist: player.isFrist
+        isFirst: player.isFirst
       }
     });
     onChose(players)

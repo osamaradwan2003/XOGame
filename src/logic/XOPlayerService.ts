@@ -44,10 +44,10 @@ class XOPlayerService {
     }
 
     if (gameState.flat().every((cell) => cell != "")) {
-      return { name: "draw", isCPU: false, isPlayer: false, isFrist: false };
+      return { name: "draw", isCPU: false, isPlayer: false, isFirst: false };
     }
 
-    return { name: "null", isCPU: false, isPlayer: false, isFrist: false };
+    return { name: "null", isCPU: false, isPlayer: false, isFirst: false };
   }
 
   getRandomCell(gameState: string[][]): number[] {
