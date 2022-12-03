@@ -1,9 +1,10 @@
-type Player = {
-  name: string;
+type PlayerNames = "x" | "o" | "draw" | "null";
+interface Player {
+  name: PlayerNames;
   isCPU: boolean;
   isPlayer: boolean;
   isFrist: boolean;
-};
+}
 
 type PlayBoxProbs = {
   currPlayer: Player;
@@ -15,6 +16,13 @@ type PlayBoxState = {
   XWonsNumbers: number;
   OWonsNumbers: number;
   tiesNumber: number;
-  winMessage: string;
+  WonMessage: string;
   showWinMessage: boolean;
+};
+
+type StateWonsNumbers = {
+  x: "XWonsNumbers";
+  o: "OWonsNumbers";
+  draw: "tiesNumber";
+  null: "tiesNumber";
 };

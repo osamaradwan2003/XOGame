@@ -14,7 +14,7 @@ export default class PlayBox extends Component<PlayBoxProbs, PlayBoxState> {
         XWonsNumbers: 0,
         OWonsNumbers: 0,
         tiesNumber: 0,
-        winMessage: "",
+        WonMessage: "",
         showWinMessage: false,
     }
     this.playService = new XOPlayerService(props.players);
@@ -31,13 +31,13 @@ export default class PlayBox extends Component<PlayBoxProbs, PlayBoxState> {
     });
   }
 
-  componentDidUpdate(prevState: PlayBoxProbs, prevProbs: PlayBoxState): void {
+  componentDidUpdate(prevProbs: PlayBoxProbs, prevState: PlayBoxState): void {
     if(this.checkWinner()){
-      console.log(this.state.gameState);
       return;
     }
-    console.log(this.state, prevState)
-      setTimeout(this.computerPlayer.bind(this), 1000);
+    if(!prevState.currPlayer.isCPU){
+      setTimeout(this.computerPlayer.bind(this), 2000);
+    }
     
   }
 
@@ -46,17 +46,47 @@ export default class PlayBox extends Component<PlayBoxProbs, PlayBoxState> {
     if(player.name == "null"){
       return false;
     }
-
+    this.resetBox();
+    this.incressWinsNumbers(player);
+    this.showWinMessage(player);
     return true;
+  }
+
+  showWinMessage(player: Player){
+    this.setState({
+      showWinMessage: true,
+      WonMessage: `${player.name.toUpperCase() != 'draw' ? 'Won' : 'DRAW'}`
+    });
+  }
+
+  incressWinsNumbers(player: Player){
+    if(player.name == 'null') return;
+    let wonNumsKeys:StateWonsNumbers = {
+      x:  "XWonsNumbers",
+      o:  "OWonsNumbers",
+      draw: "tiesNumber",
+      null: "tiesNumber",
+    }
+    
+    this.setState(()=>{
+      return {
+          [wonNumsKeys[player.name]]:  this.state[wonNumsKeys[player.name]] + 1,
+        }
+    })
+  }
+
+  resetBox(){
+    this.setState({
+        currPlayer: this.props.currPlayer,
+        gameState: [["", "", ""], ["", "", ""], ["", "", ""]],
+    });
   }
 
   computerPlayer(){
     if(!this.state.currPlayer.isCPU) return;
-    
+    this.playService.cpuPlayer(this.state.gameState, this.state.currPlayer);
     this.setState(()=>{
-      const newState = this.playService.cpuPlayer(this.state.gameState, this.state.currPlayer);
       return{
-        gameState: newState,
         currPlayer: this.props.players.filter(p=> p.name !== this.state.currPlayer.name)[0],
       }
     });
@@ -66,7 +96,17 @@ export default class PlayBox extends Component<PlayBoxProbs, PlayBoxState> {
 
   render(): JSX.Element {
     return (
-      <div className="container grid gap-3 content-center h-screen justify-center">
+      <>
+        {
+          (
+            this.state.showWinMessage ??
+            <div className="overlay absolute">
+              <h2 className="">{this.state.WonMessage}</h2>
+            </div>
+          )
+          
+        }
+        <div className="container grid gap-3 content-center h-screen justify-center">
         <header className="flex gap-3 justify-between mb-3 items-center w-full">
           <h4 className="text-2xl font-bold">
             <span className="x-color">X</span><span className="o-color">O</span>
@@ -96,7 +136,8 @@ export default class PlayBox extends Component<PlayBoxProbs, PlayBoxState> {
           <StateInfo className="bg-slate-500" title={"TIES"} content={this.state.tiesNumber} />
           <StateInfo className="o-bg" title={"O"} content={this.state.OWonsNumbers} />
         </footer>
-      </div>
+        </div>
+      </>
     );
   }
 

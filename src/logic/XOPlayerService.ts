@@ -4,19 +4,20 @@ class XOPlayerService {
     this.players = players;
   }
 
-  checkWins(state: string[][]): Player {
+  checkWins(gameState: string[][]): Player {
     // check rows
-    state.map((row) => {
+    for (let i = 0; i < gameState.length; i++) {
+      const row = gameState[i];
       if (row.every((cell) => cell == this.players[0].name)) {
         return this.players[0];
       } else if (row.every((cell) => cell == this.players[1].name)) {
         return this.players[1];
       }
-    });
+    }
 
     // check cols
     for (let index = 0; index < 3; index++) {
-      let columns = state.map((cell) => cell[index]);
+      let columns = gameState.map((cell) => cell[index]);
       if (columns.every((cell) => cell == this.players[0].name)) {
         return this.players[0];
       } else if (columns.every((cell) => cell == this.players[1].name)) {
@@ -25,8 +26,8 @@ class XOPlayerService {
     }
 
     // check digonal
-    const diagonal1 = [state[0][0], state[1][1], state[2][2]];
-    const diagonal2 = [state[0][2], state[1][1], state[2][0]];
+    const diagonal1 = [gameState[0][0], gameState[1][1], gameState[2][2]];
+    const diagonal2 = [gameState[0][2], gameState[1][1], gameState[2][0]];
 
     if (
       diagonal1.every((cell) => cell == this.players[0].name) ||
@@ -42,17 +43,17 @@ class XOPlayerService {
       return this.players[1];
     }
 
-    if (state.flat().every((cell) => cell != "")) {
+    if (gameState.flat().every((cell) => cell != "")) {
       return { name: "draw", isCPU: false, isPlayer: false, isFrist: false };
     }
 
     return { name: "null", isCPU: false, isPlayer: false, isFrist: false };
   }
 
-  getRandomCell(state: string[][]): number[] {
+  getRandomCell(gameState: string[][]): number[] {
     const emptyCells: number[][] = [];
     // get empty cells
-    state.map((row, rowIndex: number) => {
+    gameState.map((row, rowIndex: number) => {
       row.map((cell, cellIndex: number) => {
         if (cell == "") {
           emptyCells.push([rowIndex, cellIndex]);
@@ -65,11 +66,10 @@ class XOPlayerService {
     return emptyCells[randomIndex];
   }
 
-  cpuPlayer(state: string[][], player: Player): string[][] {
-    const [rowIndex, index] = this.getRandomCell(state);
-
-    state[rowIndex][index] = player.name;
-    return state;
+  cpuPlayer(gameState: string[][], player: Player): string[][] {
+    const [rowIndex, index] = this.getRandomCell(gameState);
+    gameState[rowIndex][index] = player.name;
+    return gameState;
   }
 }
 
