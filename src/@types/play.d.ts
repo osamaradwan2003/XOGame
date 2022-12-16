@@ -7,9 +7,10 @@ interface Player {
 }
 
 type PlayBoxProbs = {
-  currPlayer: Player;
-  players: Player[];
+  player1: Player;
+  player2: Player;
   onRestart: CallableFunction;
+  isAi?: boolean;
 };
 type PlayBoxState = {
   currPlayer: Player;
@@ -26,4 +27,11 @@ type StateWonsNumbers = {
   o: "OWonsNumbers";
   draw: "tiesNumber";
   null: "tiesNumber";
+};
+
+type StepScore = {
+  x: number;
+  o: number;
+  draw: number;
+  null: number;
 };

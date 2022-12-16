@@ -5,19 +5,22 @@ import { useState } from "react";
 
 
 const Index: React.FC<{}> = ()=>{
+  const defaultPlayer: Player = {name: "x", isCPU: false, isPlayer: false, isFirst: false}
   let [selectPlayer, setSelectPlayer] = useState(0),
-    [currPlayer, setCurrPlayer] = useState({name: "x", isCPU: false, isPlayer: false, isFirst: false}),
-    [players, setPlayers] = useState([{name: "x", isCPU: false, isPlayer: false, isFirst: false}]);
-
-  const chosePlayer = (players: Player[])=>{
-    setPlayers(()=>players);
+    [player1, setPlayer1] = useState(defaultPlayer),
+    [player2, setPlayer2] = useState(defaultPlayer),
+    [isAi, setAi] = useState(false)
+    
+  const chosePlayer = (players: Player[], isAi = false)=>{
     for(let player of players){
       if(player.isFirst){
-        setCurrPlayer(()=>player);
-        break;
+        setPlayer1(()=>player);
+      }else{
+        setPlayer2(player)
       }
     }
     setSelectPlayer(()=>1);
+    setAi(() => isAi)
   }
 
   const restart = ()=>{
@@ -32,7 +35,7 @@ const Index: React.FC<{}> = ()=>{
             <ChosePlayer onChose={chosePlayer}></ChosePlayer>
           :
           //@disable next line error message
-          <PlayBox onRestart={restart} currPlayer={currPlayer} players={players} />
+          <PlayBox isAi ={isAi} onRestart={restart} player1={player1} player2={player2} />
       }
     </>
   );

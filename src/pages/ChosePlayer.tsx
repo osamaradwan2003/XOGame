@@ -47,6 +47,18 @@ const ChosePlayer: React.FC<ChosePlayerProbs> = ({onChose})=>{
     onChose(players)
   }
 
+  const PlayWithAI = ()=>{
+    players = players.map(player =>{
+      return { 
+        name: player.name,
+        isCPU: !player.isPlayer,
+        isPlayer: player.isPlayer,
+        isFirst: player.isFirst
+      }
+    });
+    onChose(players, true)
+  }
+
   return (
     <div className="h-full flex justify-center flex-col items-center gap-3">
       <div className="title text-3xl font-bold">
@@ -64,11 +76,15 @@ const ChosePlayer: React.FC<ChosePlayerProbs> = ({onChose})=>{
       </Box>
       <div className="btn-group w-1/3 gap-3 flex flex-col">
         <Btn onClick={PlayWithCpu} className="text-xl p-3 rounded o-bg text-slate-900 w-full uppercase">
-            New Player VS (CPU)
+            New Game VS (CPU)
+        </Btn>
+        <Btn onClick={PlayWithAI}  className="text-xl p-3 rounded bg-slate-200 text-slate-900 w-full uppercase">
+            New Game VS AI
         </Btn>
         <Btn onClick={PlayWithPlayer}  className="text-xl p-3 rounded x-bg text-slate-900 w-full uppercase">
-            New Player VS PLAyer
+            New Game VS PLAyer
         </Btn>
+
       </div>
     </div>
   );

@@ -2,6 +2,7 @@ import { Component } from "react";
 import { Btn, MainBtn, StateInfo } from "../components";
 import {MdReplayCircleFilled} from "react-icons/md"
 import XOPlayerService from "../logic/XOPlayerService";
+import XOAiPlayer from "../logic/XOAiPlayer";
 
 
 export default class PlayBox extends Component<PlayBoxProbs, PlayBoxState> {
@@ -9,7 +10,7 @@ export default class PlayBox extends Component<PlayBoxProbs, PlayBoxState> {
   constructor(props:PlayBoxProbs ) {
     super(props)
       this.state = {
-        currPlayer: props.currPlayer,
+        currPlayer: props.player1,
         gameState: [["", "", ""], ["", "", ""], ["", "", ""]],
         XWonsNumbers: 0,
         OWonsNumbers: 0,
@@ -17,7 +18,11 @@ export default class PlayBox extends Component<PlayBoxProbs, PlayBoxState> {
         WonMessage: "",
         showWinMessage: false,
     }
-    this.playService = new XOPlayerService(props.players);
+    this.playService = new XOPlayerService(props.player1, props.player2, props.isAi);
+  }
+
+  swapPlayer(): Player{
+    return this.state.currPlayer.name == this.props.player1.name ? this.props.player2: this.props.player1
   }
 
   handelBoxBtns(rowindex: number, index: number): void{
@@ -26,17 +31,17 @@ export default class PlayBox extends Component<PlayBoxProbs, PlayBoxState> {
       prev.gameState[rowindex][index] = this.state.currPlayer.name;
       return{
         gameState: prev.gameState,
-        currPlayer: this.props.players.filter(p=> p.name !== this.state.currPlayer.name)[0],
+        currPlayer: this.swapPlayer()
       }
     });
   }
 
-  componentDidUpdate(prevProbs: PlayBoxProbs, prevState: PlayBoxState): void {
+  componentDidUpdate(_prevProbs: PlayBoxProbs, prevState: PlayBoxState): void {
     if(this.checkWinner()){
       return;
     }
     if(!prevState.currPlayer.isCPU){
-      setTimeout(this.computerPlayer.bind(this), 2000);
+      setTimeout(this.computerPlayer.bind(this), 1000);
     }
     
   }
@@ -51,6 +56,8 @@ export default class PlayBox extends Component<PlayBoxProbs, PlayBoxState> {
     this.showWinMessage(player);
     return true;
   }
+
+  
 
   showWinMessage(player: Player){
     this.setState({
@@ -67,29 +74,26 @@ export default class PlayBox extends Component<PlayBoxProbs, PlayBoxState> {
       draw: "tiesNumber",
       null: "tiesNumber",
     }
-    
-    this.setState(()=>{
-      return {
-          [wonNumsKeys[player.name]]:  this.state[wonNumsKeys[player.name]] + 1,
-        }
-    })
+    //@ts-ignore
+    this.setState({[wonNumsKeys[player.name]]:  this.state[wonNumsKeys[player.name]] + 1})
   }
 
   resetBox(){
     this.setState({
-        currPlayer: this.props.currPlayer,
+        currPlayer: this.props.player1,
         gameState: [["", "", ""], ["", "", ""], ["", "", ""]],
     });
   }
 
   computerPlayer(){
     if(!this.state.currPlayer.isCPU) return;
-    this.playService.cpuPlayer(this.state.gameState, this.state.currPlayer);
+    const newState = this.playService.computerPlayer(this.state.gameState);
     this.setState(()=>{
       return{
-        currPlayer: this.props.players.filter(p=> p.name !== this.state.currPlayer.name)[0],
+        gameState: newState,
+        currPlayer: this.swapPlayer()
       }
-    });
+    })
   }
 
 
@@ -128,7 +132,7 @@ export default class PlayBox extends Component<PlayBoxProbs, PlayBoxState> {
           <h4 className="text-2xl font-bold">
             <span className="x-color">X</span><span className="o-color">O</span>
           </h4>
-          <div  className="flex items-center justify-center p-3 rounded-lg text-sm  text-slate-400 font-bold bg-slate-900 select-none">
+          <div className="flex items-center justify-center p-3 rounded-lg text-sm  text-slate-400 font-bold bg-slate-900 select-none">
             <span className='text-lg pr-2'> {this.state.currPlayer.name} </span> TURN </div>
           <Btn onClick={this.reStart.bind(this)} className="text-xl p-3 rounded bg-slate-400 text-slate-900">
             <MdReplayCircleFilled />
