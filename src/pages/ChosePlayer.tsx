@@ -60,12 +60,12 @@ const ChosePlayer: React.FC<ChosePlayerProbs> = ({onChose})=>{
   }
 
   return (
-    <div className="h-full flex justify-center flex-col items-center gap-3">
+    <div className="w-full h-full flex gap-3 flex-col justify-center items-center">
       <div className="title text-3xl font-bold">
         <span className="x-color">X</span>
         <span className="o-color">O</span>
       </div>
-      <Box className="w-1/3 p-5" title="PICK PLAYER 1'S MARK" hint="">
+      <Box className="md:w-1/3 sm:w-2/3 w-5/6 " title="PICK PLAYER 1'S MARK" hint="">
         <Switch 
           values={["x", "o"]} 
           defaultValue='x'
@@ -74,7 +74,7 @@ const ChosePlayer: React.FC<ChosePlayerProbs> = ({onChose})=>{
           className="w-full"
         />
       </Box>
-      <div className="btn-group w-1/3 gap-3 flex flex-col">
+      <div className="btn-group md:w-1/3 sm:w-2/3 w-5/6  flex flex-col gap-3">
         <Btn onClick={PlayWithCpu} className="text-xl p-3 rounded o-bg text-slate-900 w-full uppercase">
             New Game VS (CPU)
         </Btn>

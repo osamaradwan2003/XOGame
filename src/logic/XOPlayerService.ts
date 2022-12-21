@@ -17,16 +17,17 @@ class XOPlayerService {
       this.getStepScore.bind(this)
     );
     this.stepScore = {
-      x: 100,
-      draw: 0,
-      o: -100,
-      null: 50,
+      x: player2.name == "x" ? -100 : 100,
+      draw: 50,
+      o: player2.name == "o" ? -100 : 100,
+      null: 0,
     };
   }
 
   getStepScore(gameState: string[][]) {
-    const player: Player = this.checkWins(gameState);
-    return this.stepScore[player.name];
+    const player: Player = this.checkWins(gameState),
+      score = this.stepScore[player.name];
+    return score;
   }
 
   checkWins(gameState: string[][]): Player {
@@ -102,11 +103,8 @@ class XOPlayerService {
 
   aiPlayer(gameState: string[][]) {
     const gameStateCopy = JSON.parse(JSON.stringify(gameState));
-    const score = this.AiPlayer.minMax(gameStateCopy, 2, false);
-    const bestMove = score[1];
-    console.log(bestMove);
+    const bestMove = this.AiPlayer.minimax(gameStateCopy, 2, false)[1];
     gameStateCopy[bestMove.i][bestMove.j] = this.player2.name;
-    console.table(gameStateCopy);
     return gameStateCopy;
   }
 

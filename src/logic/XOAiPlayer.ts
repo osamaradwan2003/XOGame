@@ -13,40 +13,42 @@ export default class XOAiPlayer {
     this.terminateFunction = terminateFunction;
   }
 
-  minMax(gameState: string[][], deps: number, isMaximizing: boolean = false) {
-    const result = this.terminateFunction(gameState);
-    let bestScore = {};
-    if (result == 0 || deps == 1) {
-      return [result, bestScore];
-    }
-    if (isMaximizing) {
-      let finalScore = -Infinity;
-      for (let i = 0; i < 3; i++) {
-        for (let j = 0; j < 3; j++) {
-          if (gameState[i][j] != "") continue;
-          gameState[i][j] = this.userPlayer.name;
-          let score = this.minMax(gameState, deps - 1, false)[0];
-          gameState[i][j] = "";
-          finalScore = Math.max(finalScore, score);
-        }
-      }
+  minimax(board: string[][], depth: number, isMax: boolean) {
+    let score = this.terminateFunction(board),
+      bestMove = {};
+    // console.log(score);
+    if (score === 100) return [score, bestMove];
+    if (score === -100) return [score, bestMove];
+    if (score === 50) return [0, bestMove];
 
-      return [finalScore, bestScore];
-    } else {
-      let finalScore = Infinity;
+    if (isMax) {
+      let best = -1000;
       for (let i = 0; i < 3; i++) {
         for (let j = 0; j < 3; j++) {
-          if (gameState[i][j] != "") continue;
-          gameState[i][j] = this.aiPlayer.name;
-          let score = this.minMax(gameState, deps - 1, true)[0];
-          gameState[i][j] = "";
-          if (finalScore > score) {
-            finalScore = score;
-            bestScore = { i, j };
+          if (board[i][j] == "") {
+            board[i][j] = this.userPlayer.name;
+            best = Math.max(best, this.minimax(board, depth + 1, !isMax)[0]);
+            board[i][j] = "";
           }
         }
       }
-      return [finalScore, bestScore];
+      return [best, bestMove];
+    } else {
+      let best = 1000;
+      for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+          if (board[i][j] == "") {
+            board[i][j] = this.aiPlayer.name;
+            let score = this.minimax(board, depth + 1, !isMax)[0];
+            board[i][j] = "";
+            if (best > score) {
+              best = score;
+              bestMove = { i, j };
+            }
+          }
+        }
+      }
+      return [best, bestMove];
     }
   }
 }

@@ -7,7 +7,9 @@ import XOAiPlayer from "../logic/XOAiPlayer";
 
 export default class PlayBox extends Component<PlayBoxProbs, PlayBoxState> {
   private playService: XOPlayerService;
+  private isWin: boolean;
   constructor(props:PlayBoxProbs ) {
+  
     super(props)
       this.state = {
         currPlayer: props.player1,
@@ -18,6 +20,8 @@ export default class PlayBox extends Component<PlayBoxProbs, PlayBoxState> {
         WonMessage: "",
         showWinMessage: false,
     }
+    
+    this.isWin = false; // to stop update call stack error and call Win Dialog Once Time
     this.playService = new XOPlayerService(props.player1, props.player2, props.isAi);
   }
 
@@ -37,24 +41,26 @@ export default class PlayBox extends Component<PlayBoxProbs, PlayBoxState> {
   }
 
   componentDidUpdate(_prevProbs: PlayBoxProbs, prevState: PlayBoxState): void {
-    if(this.checkWinner()){
+
+    // Check Win and Call Dialog
+    const player: Player = this.checkWinner();
+    if(player.name != "null" && this.isWin == false) {
+      console.log("Winner", player);
+      this.isWin = true
+      this.increaseWinsNumbers(player);
+      this.showWinMessage(player);
       return;
     }
+
+    //call Computer Player 
     if(!prevState.currPlayer.isCPU){
       setTimeout(this.computerPlayer.bind(this), 1000);
     }
     
   }
 
-  checkWinner(): boolean{
-    const player: Player = this.playService.checkWins(this.state.gameState)
-    if(player.name == "null"){
-      return false;
-    }
-    this.resetBox();
-    this.increaseWinsNumbers(player);
-    this.showWinMessage(player);
-    return true;
+  checkWinner(): Player{
+    return this.playService.checkWins(this.state.gameState)
   }
 
   
@@ -98,6 +104,7 @@ export default class PlayBox extends Component<PlayBoxProbs, PlayBoxState> {
 
 
   playAgain(){
+    this.resetBox();
     this.setState({
       showWinMessage: false,
       WonMessage: '',
@@ -127,36 +134,36 @@ export default class PlayBox extends Component<PlayBoxProbs, PlayBoxState> {
             </div>
           </div>
         }
-        <div className="container grid gap-3 content-center h-screen justify-center">
-        <header className="flex gap-3 justify-between mb-3 items-center w-full">
-          <h4 className="text-2xl font-bold">
-            <span className="x-color">X</span><span className="o-color">O</span>
-          </h4>
-          <div className="flex items-center justify-center p-3 rounded-lg text-sm  text-slate-400 font-bold bg-slate-900 select-none">
-            <span className='text-lg pr-2'> {this.state.currPlayer.name} </span> TURN </div>
-          <Btn onClick={this.reStart.bind(this)} className="text-xl p-3 rounded bg-slate-400 text-slate-900">
-            <MdReplayCircleFilled />
-          </Btn>
-        </header>
-        <main className="grid grid-cols-3 grid-rows-3 gap-3 w-full justify-items-center">
-          {this.state.gameState.map((rows, rowIndex)=>{
-            return rows.map((value, index)=>{
-              return (
-                <MainBtn 
-                onClick={this.handelBoxBtns.bind(this, rowIndex, index)}  
-                key={ Date.now() *  ((rowIndex +1 ) * (index +1))} 
-                className={`${this.state.gameState[rowIndex][index] == "x" ? 'x-color' : 'o-color'}`}>
-                  {value}
-                </MainBtn>
-              )
-            })
-          })}
-        </main>
-        <footer className="grid grid-cols-3 gap-3 mt-2">
-          <StateInfo className="x-bg" title={`X`} content={this.state.XWonsNumbers} />
-          <StateInfo className="bg-slate-500" title={"TIES"} content={this.state.tiesNumber} />
-          <StateInfo className="o-bg" title={"O"} content={this.state.OWonsNumbers} />
-        </footer>
+        <div className="grid justify-items-center">
+          <header className="grid grid-cols-3 grid-rows-1 gap-4 items-center justify-items-center mb-3">
+            <h4 className="text-2xl font-bold">
+              <span className="x-color">X</span><span className="o-color">O</span>
+            </h4>
+            <div className="flex items-center justify-center p-3 rounded-lg text-sm  text-slate-400 font-bold bg-slate-900 select-none">
+              <span className='text-lg pr-2'> {this.state.currPlayer.name} </span> TURN </div>
+            <Btn onClick={this.reStart.bind(this)} className="text-xl p-3 rounded bg-slate-400 text-slate-900">
+              <MdReplayCircleFilled />
+            </Btn>
+          </header>
+            <main className="grid grid-cols-3 grid-rows-3 gap-4 justify-items-center">
+              {this.state.gameState.map((rows, rowIndex)=>{
+                return rows.map((value, index)=>{
+                  return (
+                    <MainBtn 
+                    onClick={this.handelBoxBtns.bind(this, rowIndex, index)}  
+                    key={ Date.now() *  ((rowIndex +1 ) * (index +1))} 
+                    className={` ${this.state.gameState[rowIndex][index] == "x" ? 'x-color' : 'o-color'}`}>
+                      {value}
+                    </MainBtn>
+                  )
+                })
+              })}
+            </main>
+            <footer className="grid sm:grid-cols-3 grid-cols-1 gap-3 mt-4 ">
+              <StateInfo className="x-bg" title={`X`} content={this.state.XWonsNumbers} />
+              <StateInfo className="bg-slate-500" title={"TIES"} content={this.state.tiesNumber} />
+              <StateInfo className="o-bg" title={"O"} content={this.state.OWonsNumbers} />
+            </footer>
         </div>
       </>
     );
