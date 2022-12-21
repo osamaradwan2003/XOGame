@@ -1,5 +1,7 @@
 # How to configure Tic tac teo Game
 
+## live preview [Click her to Live Preview] <https://xo-ai.netlify.app/>
+
 ## features
 
 -1 Three Options for Play  (Ai , Computer  and  Play With Others Options)
