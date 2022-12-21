@@ -23,23 +23,21 @@
 
 ## How To Run
 
-- ```sh
+```sh
 
-git clone <https://github.com/osamaradwan2003/XOGame>
+git clone https://github.com/osamaradwan2003/XOGame
 
-sh```
+```
 
-- ```sh
+```sh
+npm install 
+```
 
-npm install
-
-sh```
-
-- ```sh
+```sh
 
 npm run dev
 
-sh```
+```
 
 ### copy link from shell and past it your browser then enjoy with
 
