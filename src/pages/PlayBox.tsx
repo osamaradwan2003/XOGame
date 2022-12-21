@@ -105,6 +105,7 @@ export default class PlayBox extends Component<PlayBoxProbs, PlayBoxState> {
 
   playAgain(){
     this.resetBox();
+    this.isWin = false;
     this.setState({
       showWinMessage: false,
       WonMessage: '',
