@@ -100,6 +100,3 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 If you have any issues or questions about this game, please contact me.
 
----
-
-Feel free to customize any part of this README to better suit your needs!
