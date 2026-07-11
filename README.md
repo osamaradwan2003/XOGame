@@ -5,7 +5,7 @@ A modern and fun Tic Tac Toe game built with Node.js, TypeScript, and other tech
 
 ## Live Preview
 
-[Click here to Live Preview](https://xo-ai.netlify.app/)
+[Click here to Live Preview](https://xo-ga.netlify.app/)
 
 ## Table of Contents
 
